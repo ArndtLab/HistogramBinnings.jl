@@ -1,0 +1,7 @@
+name = "HistogramBinnings"
+uuid = "8296b526-8b84-45d3-81d6-36727ca56808"
+authors = ["Peter Arndt <arndt@molgen.mpg.de> and contributors"]
+version = "0.1.0"
+
+[compat]
+julia = "1.2"
