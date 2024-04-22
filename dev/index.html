@@ -3,7 +3,40 @@
 using HistogramBinnings
 using Distributions
 
+# some data with a fat tail
 vs = floor.(Int, rand(Pareto(), 10000000))
 
 h = fit(Histogram, LogEdgeVector, vs)</code></pre><p>Or for more fine grained control using <code>append</code> as in </p><pre><code class="language-julia hljs">h = Histogram(LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60))
-append!(h, vs)</code></pre></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="installation/">Installation »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.0 on <span class="colophon-date" title="Friday 19 April 2024 15:55">Friday 19 April 2024</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
+append!(h, vs)</code></pre><p>Midpoints of the intervals can be computed with <code>midpoints</code>.  Arithmetic means will be used for intervals in linear space and geometric means for intervals in log space.</p><h3 id="Plotting"><a class="docs-heading-anchor" href="#Plotting">Plotting</a><a id="Plotting-1"></a><a class="docs-heading-anchor-permalink" href="#Plotting" title="Permalink"></a></h3><pre><code class="language-julia hljs">using StatsBase
+using HistogramBinnings
+using Distributions
+
+# some data with a fat tail
+vs = floor.(Int, rand(Pareto(), 10000000))
+
+# Conventional linear binned histogram
+hlin = Histogram(LinEdgeVector(lo = 1, hi = 1_000_000, nbins = 1_000_000))
+append!(hlin, vs)
+
+# Logarithmically binned histogram
+hlog = Histogram(LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 30))
+append!(hlog, vs)
+
+# Normalisizing &amp; coordinates of data points
+using LinearAlgebra
+
+function xy(h::Histogram{T, 1, E}; mode = :density) where {T, E}
+    hn = normalize(h; mode)
+    return midpoints(h.edges[1]), hn.weights
+end
+
+# Plotting using PyPlot
+using PyPlot
+
+fig = figure()
+ax = fig.add_subplot(111)
+ax.plot(xy(hlin)..., marker = &quot;.&quot;, linestyle = &quot;none&quot;, label = &quot;Linear Histogram&quot;)
+ax.plot(xy(hlog)..., marker = &quot;+&quot;, label = &quot;Logarithmically Binned Histogram&quot;)
+ax.set_xscale(&quot;log&quot;)
+ax.set_yscale(&quot;log&quot;)
+ax.legend()</code></pre><img src="index-6305d4e4.png" alt="Example block output"/></article><nav class="docs-footer"><a class="docs-footer-nextpage" href="installation/">Installation »</a><div class="flexbox-break"></div><p class="footer-message">Powered by <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> and the <a href="https://julialang.org/">Julia Programming Language</a>.</p></nav></div><div class="modal" id="documenter-settings"><div class="modal-background"></div><div class="modal-card"><header class="modal-card-head"><p class="modal-card-title">Settings</p><button class="delete"></button></header><section class="modal-card-body"><p><label class="label">Theme</label><div class="select"><select id="documenter-themepicker"><option value="auto">Automatic (OS)</option><option value="documenter-light">documenter-light</option><option value="documenter-dark">documenter-dark</option></select></div></p><hr/><p>This document was generated with <a href="https://github.com/JuliaDocs/Documenter.jl">Documenter.jl</a> version 1.4.0 on <span class="colophon-date" title="Monday 22 April 2024 10:28">Monday 22 April 2024</span>. Using Julia version 1.6.7.</p></section><footer class="modal-card-foot"></footer></div></div></div></body></html>
