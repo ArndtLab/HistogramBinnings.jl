@@ -8,7 +8,9 @@ Documentation for [HistogramBinnings](https://github.com/ArndtLab/HistogramBinni
 
 
 This package provides more general edge vectors for histograms. 
-Especially it allow to use logarithmically binned histograms.
+Especially it allows to use logarithmically binned histograms.
+
+
 
 ### Example
 One can use these with `StatsBase.fit` as in:
@@ -35,8 +37,8 @@ vs = floor.(Int, rand(Pareto(), 10000000))
 ```
 
 ```@example 2
-h = Histogram(LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60))
-append!(h, vs)
+edges = LogEdgeVector{Int}(lo = 1, hi = 1_000_000, nbins = 60)
+h = append!(Histogram(edges), vs)
 nothing # hide
 ```
 Midpoints of the intervals can be computed with `midpoints`. 

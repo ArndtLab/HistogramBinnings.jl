@@ -1,3 +1,27 @@
+"""
+Module for constructing edge vectors for histograms.
+
+# Examples
+```julia
+using StatsBase 
+using HistogramBinnings
+
+h = fit(Histogram, LogEdgeVector, values)
+
+# or with a custom edge vector
+
+edges = LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60)
+h = append!(Histogram(edges), values)
+```
+
+# Exports
+This module exports the following types and functions:
+
+- `LogEdgeVector`
+- `LinEdgeVector`
+- `midpoints`
+
+"""
 module HistogramBinnings
 
 import StatsAPI: fit
@@ -21,10 +45,9 @@ evenly in log space. `lo` and `hi` are the lower and upper limits of the histogr
 # Examples
 
 ```julia
-using StatsBase, HistogramBinnings
+using HistogramBinnings
 
-h = Histogram(LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60))
-append!(h, vs)
+edges = LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60)
 ```
 """
 struct LogEdgeVector{T} <: AbstractEdgeVector{T}
@@ -41,10 +64,9 @@ evenly in linear space. `lo` and `hi` are the lower and upper limits of the hist
 # Examples
 
 ```julia
-using StatsBase, HistogramBinnings
+using HistogramBinnings
 
-h = Histogram(LinEdgeVector(lo = 1, hi = 1_000_000, nbins = 60))
-append!(h, vs)
+edges = LinEdgeVector(lo = 1, hi = 1_000_000, nbins = 60)
 ```
 """
 struct LinEdgeVector{T} <: AbstractEdgeVector{T}
@@ -121,7 +143,9 @@ Base.eltype(r::AbstractEdgeVector{T}) where T = T
 """
     midpoints(r::AbstractEdgeVector{T}) where T
 
-Return the midpoints of the bins in `r`.
+Return the midpoints of the bins in `r`. The calculation of the midpoints
+depends on the type of the edges and whether they are linearly or logarithmically  
+spaced.
 """
 function midpoints(r::LogEdgeVector{T}) where T <: Real
     sqrt.(r.edges[1:end-1] .* (r.edges[2:end]))
@@ -138,6 +162,8 @@ end
 function midpoints(r::LinEdgeVector{T}) where T <: Integer
     (r.edges[1:end-1] .+ r.edges[2:end] .- 1) ./ 2
 end
+
+
 
 """
     fit(::Type{Histogram}, ::Type{T}, vs::AbstractVector;
@@ -164,8 +190,8 @@ h = fit(Histogram, LogEdgeVector, vs)
 
 # or 
 
-h = Histogram(LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60))
-append!(h1, vs)
+edges = LogEdgeVector(lo = 1, hi = 1_000_000, nbins = 60)
+h = append!(Histogram(edges), vs)
 ```
 """
 function fit(::Type{Histogram}, ::Type{T}, vs::AbstractVector; 
