@@ -4,7 +4,7 @@ CurrentModule = HistogramBinnings
 
 # HistogramBinnings
 
-Documentation for [HistogramBinnings](https://github.com/ArndtLab/HistogramBinnings.jl).
+Documentation for the julia package `HistogramBinnings.jl`. The source code is available at [github.com/ArndtLab/HistogramBinnings.jl](https://github.com/ArndtLab/HistogramBinnings.jl).
 
 
 This package provides more general edge vectors for histograms. 
