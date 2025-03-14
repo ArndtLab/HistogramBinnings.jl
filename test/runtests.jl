@@ -76,6 +76,12 @@ end
     @test size(e)[1] == 101
     @test eltype(e) == Float64
 
+    # issue #7
+    e = LogEdgeVector(lo = 30, hi = 1000000, nbins = 2000)
+    @test eltype(e) == Int
+    @test e[1] == 30
+    @test e[2] != 30
+    @test e[end] == 1000001
 end
 
 

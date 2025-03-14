@@ -83,7 +83,7 @@ function LogEdgeVector{T}(; lo = 1, hi = 10, nbins::Integer) where T <: Integer
     lo = floor(Int, lo)
     hi = ceil(Int, hi)
     edges = unique(floor.(Int,
-            10 .^ (range(log10(lo), stop = log10(hi+1), length = nbins+1))))
+            10 .^ (range(log10(lo), stop = log10(hi+1), length = nbins+1) .+ eps(Float64))))
     edges[1] = lo
     edges[end] = hi + 1
     LogEdgeVector{T}(edges)
